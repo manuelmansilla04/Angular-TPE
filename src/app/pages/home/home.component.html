@@ -1,0 +1,40 @@
+<section class="home">
+  <div class="home-header">
+    <h1 class="home-title">Explora repositorios</h1>
+    <p class="home-subtitle">Busca proyectos en GitHub guardando tus favoritos</p>
+  </div>
+
+  <app-repo-search (search)="onSearch($event)"></app-repo-search>
+
+  @if (isLoading) {
+    <div class="status-msg">Buscando repositorios...</div>
+  }
+
+  @if (errorMsg) {
+    <div class="status-msg error">⚠️ {{ errorMsg }}</div>
+  }
+
+  
+
+  @if (!isLoading && !errorMsg && repos.length === 0 && searchedQuery !== '') {
+    <div class="status-msg">
+      No se encontraron resultados para <strong>{{ searchedQuery }}</strong>.
+    </div>
+  }
+
+  @if (repos.length > 0) {
+    <p class="results-info">
+      Mostrando {{ repos.length }} resultados para <strong>{{ searchedQuery }}</strong>
+    </p>
+    <div class="repo-grid">
+      @for (repo of repos; track repo.id) {
+        <app-repo-card
+          [repo]="repo"
+          [isFavorite]="isFavorite(repo)"
+          (addFavorite)="onAddFavorite($event)"
+          (removeFavorite)="onRemoveFavorite($event)"
+        ></app-repo-card>
+      }
+    </div>
+  }
+</section>

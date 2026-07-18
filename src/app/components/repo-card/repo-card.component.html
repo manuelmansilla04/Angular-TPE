@@ -1,0 +1,32 @@
+<div class="card">
+  <div class="card-header">
+    <img [src]="repo.owner.avatar_url" [alt]="repo.owner.login" class="avatar" />
+    <div class="card-meta">
+      <span class="owner">{{ repo.owner.login }}</span>
+      <a [href]="repo.html_url" target="_blank" class="repo-name">{{ repo.name }}</a>
+    </div>
+    <button
+      class="fav-btn"
+      [class.active]="isFavorite"
+      (click)="onToggleFavorite()"
+      [title]="isFavorite ? 'Sacar de favoritos' : 'Guardar en favoritos'"
+    >
+      {{ isFavorite ? '★' : '☆' }}
+    </button>
+  </div>
+
+  @if (repo.description) {
+    <p class="description">{{ repo.description }}</p>
+  } @else {
+    <p class="description no-desc">Sin descripción.</p>
+  }
+
+  <div class="card-footer">
+    @if (repo.language) {
+      <span class="badge lang">{{ repo.language }}</span>
+    }
+    <span class="stat">Favs: {{ repo.stargazers_count | number }}</span>
+    <span class="stat">Forks: {{ repo.forks_count | number }}</span>
+    <span class="stat updated">Actualizado: {{ formatDate(repo.updated_at) }}</span>
+  </div>
+</div>

@@ -1,0 +1,83 @@
+<section class="favorites">
+  <div class="fav-header">
+    <h1 class="fav-title">★ Mis Favoritos</h1>
+    <p class="fav-subtitle">Repositorios guardados personalmente</p>
+  </div>
+
+  @if (isLoading) {
+    <div class="status-msg">Cargando...</div>
+  }
+
+  @if (!isLoading && favorites.length === 0) {
+    <div class="empty-state">
+      <p>No hay repositorios guardados</p>
+      <a routerLink="/">Ir a explorar</a>
+    </div>
+  }
+
+  <div class="fav-list">
+    @for (fav of favorites; track fav.id) {
+      <div class="fav-card">
+        <div class="fav-card-header">
+          <img [src]="fav.ownerAvatar" [alt]="fav.ownerLogin" class="avatar" />
+          <div class="fav-meta">
+            <span class="owner">{{ fav.ownerLogin }}</span>
+            <a [href]="fav.html_url" target="_blank" class="repo-name">{{ fav.name }}</a>
+          </div>
+          <div class="fav-badges">
+            <span class="badge priority">{{ priorityLabel(fav.priority) }}</span>
+            @if (fav.tag !== 'Sin etiqueta') {
+              <span class="badge tag">🏷️ {{ fav.tag }}</span>
+            }
+          </div>
+        </div>
+
+        @if (fav.description) {
+          <p class="description">{{ fav.description }}</p>
+        }
+
+        <div class="fav-stats">
+          @if (fav.language) {
+            <span class="badge lang">{{ fav.language }}</span>
+          }
+          <span class="stat">Favs: {{ fav.stargazers_count | number }}</span>
+          <span class="stat">Forks: {{ fav.forks_count | number }}</span>
+        </div>
+
+        <!-- Formulario de edición -->
+        @if (editingId === fav.id) {
+          <form [formGroup]="editForm" (ngSubmit)="saveEdit(fav)" class="edit-form">
+            <div class="form-row">
+              <div class="form-field">
+                <label>Etiqueta</label>
+                <input type="text" formControlName="tag" placeholder="ej: para estudiar" />
+                @if (editForm.get('tag')?.invalid && editForm.get('tag')?.touched) {
+                  <span class="error-msg">Requerida, 30 caracteres max.</span>
+                }
+              </div>
+              <div class="form-field">
+                <label>Prioridad</label>
+                <select formControlName="priority">
+                  <option value="alta">ALTA</option>
+                  <option value="media">Media</option>
+                  <option value="baja">baja</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn-save" [disabled]="editForm.invalid">Guardar</button>
+              <button type="button" class="btn-cancel" (click)="cancelEdit()">Cancelar</button>
+            </div>
+          </form>
+        }
+
+        <div class="card-actions">
+          @if (editingId !== fav.id) {
+            <button class="btn-edit" (click)="startEdit(fav)">Edit</button>
+          }
+          <button class="btn-delete" (click)="remove(fav.id!)">Borrar</button>
+        </div>
+      </div>
+    }
+  </div>
+</section>

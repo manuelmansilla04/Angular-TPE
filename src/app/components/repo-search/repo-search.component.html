@@ -1,0 +1,22 @@
+<form [formGroup]="searchForm" (ngSubmit)="onSubmit()" class="search-form">
+  <div class="search-input-wrapper">
+    <input
+      type="text"
+      formControlName="query"
+      placeholder="Escriba nombre de repositorio aqui"
+      class="search-input"
+      [class.is-invalid]="query?.invalid && query?.touched"
+    />
+    <button type="submit" class="search-btn" [disabled]="searchForm.invalid">
+      Buscar
+    </button>
+  </div>
+
+  @if (query?.touched && query?.hasError('required')) {
+  <p class="error-msg">El campo de busqueda es obligatorio</p>
+  } @if (query?.touched && query?.hasError('minlength')) {
+  <p class="error-msg">Ingresa al menos 2 caracteres</p>
+  } @if (query?.touched && query?.hasError('maxlength')) {
+  <p class="error-msg">50 caracteres max.</p>
+  }
+</form>
